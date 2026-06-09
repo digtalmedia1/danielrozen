@@ -5,13 +5,15 @@
 - **PHP:** Available (PHP 8.2.20).
 - **Web Server:** Available (Built-in PHP server).
 
-Due to the absence of a real MySQL database in this environment, full end-to-end database-driven tests (Step 3-23 of the test sequence) were **BLOCKED**. The following tests were performed based on code analysis and syntax verification.
+Due to the absence of a real MySQL database in this environment, full end-to-end database-driven tests were **BLOCKED**. The following tests were performed based on code analysis and syntax verification.
 
 ## Test Summary
 
 | Test Name | Steps / Command | Result | Actual Result / Notes |
 |-----------|-----------------|--------|-----------------------|
 | PHP Syntax Check | `php -l` on all files | **PASS** | No syntax errors found in any PHP file. |
+| Inactivity Timeout | Logic verification | **PASS** | Timeout only applies if `admin_id` session exists. |
+| Manual Booking Overlap| Logic verification | **PASS** | Overlapping available slots are deleted in the transaction. |
 | Sanitize Function | Logic test in `run_tests.php` | **PASS** | Tags correctly stripped and trimmed. |
 | CSRF Logic | Static analysis & Mock test | **PASS** | hash_equals used correctly with session token. |
 | Footer Link | `grep` across HTML files | **PASS** | "כניסת מנהל" link present in all pages. |

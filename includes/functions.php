@@ -33,21 +33,23 @@ function startSecureSession() {
         session_start();
     }
 
-    // Inactivity timeout (30 minutes)
-    $timeout = 1800;
-    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
-        session_unset();
-        session_destroy();
-        if (strpos($_SERVER['REQUEST_URI'], '/api/') !== false) {
-            header("Content-Type: application/json; charset=UTF-8");
-            http_response_code(401);
-            echo json_encode(["success" => false, "error" => ["code" => "SESSION_EXPIRED", "message" => "Session expired"]]);
+    // Inactivity timeout (30 minutes) - Only for logged in admins
+    if (isset($_SESSION['admin_id'])) {
+        $timeout = 1800;
+        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
+            session_unset();
+            session_destroy();
+            if (strpos($_SERVER['REQUEST_URI'], '/api/') !== false) {
+                header("Content-Type: application/json; charset=UTF-8");
+                http_response_code(401);
+                echo json_encode(["success" => false, "error" => ["code" => "SESSION_EXPIRED", "message" => "Session expired"]]);
+                exit;
+            }
+            header("Location: /admin/login.php?expired=1");
             exit;
         }
-        header("Location: /admin/login.php?expired=1");
-        exit;
+        $_SESSION['last_activity'] = time();
     }
-    $_SESSION['last_activity'] = time();
 }
 
 startSecureSession();
